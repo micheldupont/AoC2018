@@ -84,14 +84,14 @@ namespace AoC2018
 
 		public string OptimizeForAllPolymers()
 		{
-			var optimisationsToTry = "bcdefghijklmnopqrstuvwxyz".ToCharArray();
+			var optimizationsToTry = "bcdefghijklmnopqrstuvwxyz".ToCharArray();
 			Console.WriteLine("simulating a...");
 			var bestResult = Optimize("a");
 
-			foreach (var optimisation in optimisationsToTry)
+			foreach (var optimization in optimizationsToTry)
 			{
-				Console.WriteLine("simulating " + optimisation + "...");
-				var r = Optimize(new string(new []{optimisation}));
+				Console.WriteLine("simulating " + optimization + "...");
+				var r = Optimize(new string(new []{optimization}));
 
 				if (r.Length < bestResult.Length)
 				{

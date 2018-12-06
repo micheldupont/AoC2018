@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace AoC2018
 {
@@ -14,6 +13,7 @@ namespace AoC2018
             FallAsleep,
             WakeUp
         }
+
         public class ShiftEvent
         {
             protected bool Equals(ShiftEvent other)
