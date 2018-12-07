@@ -68,6 +68,7 @@
     <Compile Include="Day3Tests.cs" />
     <Compile Include="Day4Tests.cs" />
     <Compile Include="Day6Tests.cs" />
+    <Compile Include="Day7Tests.cs" />
     <Compile Include="Inputs.cs" />
     <Compile Include="MyInputs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
