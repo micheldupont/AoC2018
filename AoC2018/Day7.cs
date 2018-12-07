@@ -56,7 +56,7 @@ namespace AoC2018
 		{
 			UpdateStatus(steps);
 
-			return steps.Where(s => !s.IsLocked).OrderBy(s => s.Name).ToList();
+			return steps.Where(s => !s.IsLocked).OrderByDescending(s => s.WorkingOnIt).ThenBy(s => s.Name).ToList();
 		}
 
 		public static string GetUnlockSequence(List<Step> steps)
@@ -74,6 +74,50 @@ namespace AoC2018
 
 			return result;
 		}
+
+		public static void SetDuration(int baseDuration, Step step)
+		{
+			step.Duration = baseDuration;
+
+			var index = char.ToUpper(step.Name[0]) -64;
+
+			step.Duration += index;
+		}
+
+		public static int Simulate(int workerCount, int baseDuration, List<Step> steps)
+		{
+			if (workerCount <= 0)
+			{
+				return -1;
+			}
+
+			var duration = 0;
+
+			foreach (var step in steps)
+			{
+				SetDuration(baseDuration, step);
+			}
+
+			while (steps.Count > 0)
+			{
+				duration++;
+				var unlocked = FindUnlockedSteps(steps);
+
+				var topUnlockedSteps = unlocked.Take(workerCount);
+
+				foreach (var step in topUnlockedSteps)
+				{
+					step.WorkingOnIt = true;
+					step.Duration--;
+					if (step.Duration <= 0)
+					{
+						steps.Remove(step);
+					}
+				}
+			}
+
+			return duration;
+		}
 	}
 
 	public class Step
@@ -81,11 +125,14 @@ namespace AoC2018
 		public string Name { get; set; }
 		public List<Step> Unlocks { get; }
 		public bool IsLocked { get; set; }
+		public int Duration { get; set; }
+		public bool WorkingOnIt { get; set; }
 
 		public Step()
 		{
 			Unlocks = new List<Step>();
 			IsLocked = true;
+			WorkingOnIt = false;
 		}
 	}
 }

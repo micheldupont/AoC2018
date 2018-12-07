@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -112,6 +113,118 @@ Step F must be finished before step E can begin.";
 			var result = Day7.GetUnlockSequence(steps);
 
 			Assert.Equal("GJKLDFNPTMQXIYHUVREOZSAWCB", result);
+		}
+
+		[Fact]
+		public void CanCalculateInitialDurationForStep()
+		{
+			var inputs = _testInput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			var steps = Day7.Parse(inputs);
+
+			Day7.SetDuration(0, steps[0]);
+			Day7.SetDuration(60, steps[5]);
+
+			Assert.Equal(1, steps[0].Duration);
+			Assert.Equal(66, steps[5].Duration);
+		}
+
+		[Fact]
+		public void CanSimulateOneStep()
+		{
+			var inputs = _testInput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			var steps = Day7.Parse(inputs);
+
+			var result = Day7.Simulate(1, 0, new List<Step> {steps[2]});
+
+			Assert.Equal(3, result);
+		}
+
+		[Fact]
+		public void CanSimulateOneStepB()
+		{
+			var inputs = _testInput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			var steps = Day7.Parse(inputs);
+
+			var result = Day7.Simulate(1, 0, new List<Step> { steps[0] });
+
+			Assert.Equal(1, result);
+		}
+
+		[Fact]
+		public void CanSimulateTwoLinearSteps()
+		{
+			var inputs = _testInput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			var steps = Day7.Parse(inputs);
+
+			var result = Day7.Simulate(1, 10, new List<Step> { steps[0], steps[2] });
+
+			Assert.Equal(24, result);
+		}
+
+		[Fact]
+		public void CanSimulateTwoLinearStepsB()
+		{
+			var inputs = _testInput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			var steps = Day7.Parse(inputs);
+
+			var result = Day7.Simulate(1, 0, new List<Step> { steps[0], steps[1] });
+
+			Assert.Equal(3, result);
+		}
+
+		[Fact]
+		public void CanSimulateTwoParallelStepsWithOneWorker()
+		{
+			var inputs = _testInput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			var steps = Day7.Parse(inputs);
+
+			var result = Day7.Simulate(1, 10, new List<Step> { steps[0], steps[2], steps[5] });
+
+			Assert.Equal(40, result);
+		}
+
+		[Fact]
+		public void CanSimulateTwoParallelStepsWithTwoWorkers()
+		{
+			var inputs = _testInput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			var steps = Day7.Parse(inputs);
+
+			var result = Day7.Simulate(2, 0, new List<Step> { steps[0], steps[2], steps[5] });
+
+			Assert.Equal(9, result);
+		}
+
+		[Fact]
+		public void CanSimulateTwoParallelStepsWithTwoWorkersB()
+		{
+			var inputs = _testInput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			var steps = Day7.Parse(inputs);
+
+			var result = Day7.Simulate(2, 0, new List<Step> { steps[0], steps[2], steps[5] });
+
+			Assert.Equal(9, result);
+		}
+
+		[Fact]
+		public void CanSimulateExample()
+		{
+			var inputs = _testInput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			var steps = Day7.Parse(inputs);
+
+			var result = Day7.Simulate(2, 0, steps);
+
+			Assert.Equal(15, result);
+		}
+
+		[Fact]
+		public void Q2()
+		{
+			var inputs = Inputs.Day7.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			var steps = Day7.Parse(inputs);
+
+			var result = Day7.Simulate(5, 60, steps);
+
+			Assert.Equal(967, result);
 		}
 	}
 }
