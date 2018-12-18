@@ -54,8 +54,8 @@ y=13, x=498..504";
             var day = new Day17(_testInput);
 
             Assert.Equal(495, day.Minx);
-            Assert.Equal(12, day.Map.GetLength(0));
-            Assert.Equal(14, day.Map.GetLength(1));
+            Assert.Equal(12 + 9, day.Map.GetLength(0));
+            Assert.Equal(13, day.Map.GetLength(1));
 
            // Render(day.Map);
         }
@@ -68,7 +68,7 @@ y=13, x=498..504";
             var drop = day.DropWater();
 
             Assert.Equal(1, drop.X);
-            Assert.Equal(6, drop.Y);
+            Assert.Equal(5, drop.Y);
 
          //   Render(day.Map);
         }
@@ -80,11 +80,11 @@ y=13, x=498..504";
 
             day.DropManyWater(57);
 
-            Assert.Equal('w', day.Map[1, 6]);
             Assert.Equal('w', day.Map[1, 5]);
-            Assert.Equal('w', day.Map[5, 4]);
+            Assert.Equal('w', day.Map[1, 4]);
+            Assert.Equal('w', day.Map[5, 3]);
 
-           // Render(day.Map);
+            //Render(day.Map);
         }
 
 	    [Fact]
@@ -93,7 +93,7 @@ y=13, x=498..504";
 		    var day = new Day17(_testInput);
 
 		    var result = day.Flood();
-
+		    //day.DropManyWater(57);
 			Assert.Equal(57, result);
 		    //Render(day.Map);
 		}
@@ -105,8 +105,19 @@ y=13, x=498..504";
 
 		    var result = day.Flood();
 
-		    Assert.Equal(1, result);
-		    Render(day.Map);
+			Assert.Equal(37073, result);
+		   // Render(day.Map);
+	    }
+
+	    [Fact]
+	    public void Q2()
+	    {
+		    var day = new Day17(Inputs.Day17);
+
+		    var result = day.FloodAndDry();
+
+		    Assert.Equal(29289, result);
+		    //Render(day.Map);
 	    }
 	}
 }

@@ -8,8 +8,9 @@ namespace AoC2018
     {
         public char[,] Map;
         public int Minx { get; set; }
+	    public int Miny { get; set; }
 
-        public Day17(string input)
+		public Day17(string input)
         {
             var lines = input.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
             var wallCoordinates = new List<Coordinate>();
@@ -55,31 +56,25 @@ namespace AoC2018
             var maxX = wallCoordinates.Max(c => c.X);
             var minX = wallCoordinates.Min(c => c.X);
             var maxY = wallCoordinates.Max(c => c.Y);
+	        var minY = wallCoordinates.Min(c => c.Y);
 
-            Map = new char[maxX - minX + 1, maxY + 1];
-            for (int y = 0; y <= maxY; y++)
+			Map = new char[maxX - minX + 10, maxY - minY + 1];
+
+            for (int y = 0; y <= maxY - minY; y++)
             {
-                for (int x = 0; x <= maxX - minX; x++)
+                for (int x = 0; x <= maxX - minX + 9; x++)
                 {
-                    /*if (wallCoordinates.Find(c => c.X == (x + minX) && c.Y == y) != null)
-                    {
-                        Map[x, y] = '#';
-                    }
-                    else
-                    {*/
-                        Map[x, y] = '.';
-                   // }
+					Map[x, y] = '.';
                 }
             }
 
-            Map[500 - minX, 0] = '+';
-
 	        foreach (var wallCoordinate in wallCoordinates)
 	        {
-		        Map[wallCoordinate.X - minX, wallCoordinate.Y] = '#';
+		        Map[wallCoordinate.X - minX, wallCoordinate.Y - minY] = '#';
 	        }
 
             Minx = minX;
+	        Miny = minY;
         }
 
         private int XOffset(int num)
@@ -87,8 +82,7 @@ namespace AoC2018
             return num - Minx;
         }
 
-
-        public Drop DropWater()
+		public Drop DropWater()
         {
             if (Map[XOffset(500), 1] != '.')
                 return null;
@@ -105,8 +99,6 @@ namespace AoC2018
             {
                 DropWater();
             }
-
-	        Map[XOffset(500), 0] = '+';
 		}
 
 	    public int Flood()
@@ -114,8 +106,6 @@ namespace AoC2018
 		    do{
 			    DropWater();
 		    } while (Map[XOffset(500), 1] == '.');
-
-		    Map[XOffset(500), 0] = '+';
 
 		    var flooded = 0;
 		    for (int y = 0; y < Map.GetLength(1); y++)
@@ -132,10 +122,34 @@ namespace AoC2018
 		    }
 
 
-		    return flooded;
+		    return flooded + 1;
 	    }
 
-		public class Coordinate
+	    public int FloodAndDry()
+	    {
+			do
+		    {
+			    DropWater();
+		    } while (Map[XOffset(500), 1] == '.');
+
+		    var holdsWater = 0;
+		    for (int y = 0; y < Map.GetLength(1); y++)
+		    {
+			    for (int x = 0; x < Map.GetLength(0); x++)
+			    {
+
+				    if (Map[x, y] == 'w')
+				    {
+					    holdsWater++;
+				    }
+
+			    }
+		    }
+
+		    return holdsWater;
+		}
+
+	    public class Coordinate
         {
             public int X { get; set; }
             public int Y { get; set; }
@@ -147,7 +161,7 @@ namespace AoC2018
             }
         }
 
-        public class Drop
+	    public class Drop
         {
             public int X { get; set; }
             public int Y { get; set; }
@@ -193,10 +207,40 @@ namespace AoC2018
                 else if( left == '|' || right == '|')
                 {
 	                map[X, Y] = '|';
-                }
+
+	                if (left == 'w')
+	                {
+						PropagateLeft(ref map);
+	                }
+
+	                if (right == 'w')
+	                {
+		                PropagateRight(ref map);
+	                }
+				}
             }
 
-            public void RunLeft(ref char[,] map)
+	        public void PropagateLeft(ref char[,] map)
+	        {
+		        X--;
+		        while (map[X, Y] == 'w')
+		        {
+			        map[X, Y] = '|';
+			        X--;
+		        }
+	        }
+
+	        public void PropagateRight(ref char[,] map)
+	        {
+		        X++;
+		        while (map[X, Y] == 'w')
+		        {
+			        map[X, Y] = '|';
+			        X++;
+		        }
+	        }
+
+			public void RunLeft(ref char[,] map)
             {
                 map[X, Y] = '.';
                 map[X - 1, Y] = 'w';
