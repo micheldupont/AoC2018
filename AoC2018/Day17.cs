@@ -61,18 +61,24 @@ namespace AoC2018
             {
                 for (int x = 0; x <= maxX - minX; x++)
                 {
-                    if (wallCoordinates.Find(c => c.X == (x + minX) && c.Y == y) != null)
+                    /*if (wallCoordinates.Find(c => c.X == (x + minX) && c.Y == y) != null)
                     {
                         Map[x, y] = '#';
                     }
                     else
-                    {
+                    {*/
                         Map[x, y] = '.';
-                    }
+                   // }
                 }
             }
 
             Map[500 - minX, 0] = '+';
+
+	        foreach (var wallCoordinate in wallCoordinates)
+	        {
+		        Map[wallCoordinate.X - minX, wallCoordinate.Y] = '#';
+	        }
+
             Minx = minX;
         }
 
@@ -99,9 +105,37 @@ namespace AoC2018
             {
                 DropWater();
             }
-        }
 
-        public class Coordinate
+	        Map[XOffset(500), 0] = '+';
+		}
+
+	    public int Flood()
+	    {
+		    do{
+			    DropWater();
+		    } while (Map[XOffset(500), 1] == '.');
+
+		    Map[XOffset(500), 0] = '+';
+
+		    var flooded = 0;
+		    for (int y = 0; y < Map.GetLength(1); y++)
+		    {
+			    for (int x = 0; x < Map.GetLength(0); x++)
+			    {
+
+				    if (Map[x, y] == 'w' || Map[x, y] == '|')
+				    {
+					    flooded++;
+				    }
+
+			    }
+		    }
+
+
+		    return flooded;
+	    }
+
+		public class Coordinate
         {
             public int X { get; set; }
             public int Y { get; set; }
@@ -130,9 +164,12 @@ namespace AoC2018
                 map[X, Y + 1] = 'w';
                 Y++;
 
-                if (Y + 1 >= map.GetLength(1))
-                    return;
-
+	            if (Y + 1 >= map.GetLength(1))
+	            {
+		            map[X, Y] = '|';
+		            return;
+				}
+				
                 var down = map[X, Y + 1];
                 var left = map[X - 1, Y];
                 var right = map[X + 1, Y];
@@ -141,6 +178,10 @@ namespace AoC2018
                 {
                     RunDown(ref map);
                 }
+				else if (down == '|')
+                {
+	                map[X, Y] = '|';
+                }
                 else if (left == '.')
                 {
                     RunLeft(ref map);
@@ -148,6 +189,10 @@ namespace AoC2018
                 else if(right == '.')
                 {
                     RunRight(ref map);
+                }
+                else if( left == '|' || right == '|')
+                {
+	                map[X, Y] = '|';
                 }
             }
 
@@ -158,7 +203,10 @@ namespace AoC2018
                 X--;
 
                 if (X - 1 < 0)
-                    return;
+                {
+	                map[X, Y] = '|';
+					return;
+                }
 
                 var down = map[X, Y + 1];
                 var left = map[X - 1, Y];
@@ -167,11 +215,19 @@ namespace AoC2018
                 {
                     RunDown(ref map);
                 }
+				else if (down == '|')
+                {
+	                map[X, Y] = '|';
+                }
                 else if (left == '.')
                 {
                     RunLeft(ref map);
                 }
-            }
+                else if (left == '|')
+                {
+					map[X, Y] = '|';
+				}
+			}
 
             public void RunRight(ref char[,] map)
             {
@@ -180,7 +236,10 @@ namespace AoC2018
                 X++;
 
                 if (X + 1 >= map.GetLength(0))
-                    return;
+                {
+	                map[X, Y] = '|';
+					return;
+                }
 
                 var down = map[X, Y + 1];
                 var right = map[X + 1, Y];
@@ -189,11 +248,19 @@ namespace AoC2018
                 {
                     RunDown(ref map);
                 }
-                else if (right == '.')
+                else if (down == '|')
+                {
+	                map[X, Y] = '|';
+                }
+				else if (right == '.')
                 {
                     RunRight(ref map);
                 }
-            }
+                else if (right == '|')
+                {
+	                map[X, Y] = '|';
+                }
+			}
         }
     }
 }

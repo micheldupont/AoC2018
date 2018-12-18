@@ -1,14 +1,14 @@
-﻿using System.Text;
+﻿using System;
+using System.IO;
+using System.Text;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace AoC2018.tests
 {
-    public class Day17Tests
+    public class Day17Tests : IDisposable
     {
-        private readonly ITestOutputHelper _output;
-
-        private readonly string _testInput = @"x=495, y=2..7
+	    private readonly string _testInput = @"x=495, y=2..7
 y=7, x=495..501
 x=501, y=3..7
 x=498, y=2..4
@@ -17,12 +17,21 @@ x=498, y=10..13
 x=504, y=10..13
 y=13, x=498..504";
 
-        public Day17Tests(ITestOutputHelper output)
-        {
-            _output = output;
-        }
+	    protected internal StreamWriter Sw;
 
-        private void Render(char[,] map)
+	    public Day17Tests(ITestOutputHelper output)
+	    {
+		    Sw = new StreamWriter("./out.txt");
+
+	    }
+
+	    public void Dispose()
+	    {
+		    Sw.Close();
+		    Sw.Dispose();
+	    }
+
+	    private void Render(char[,] map)
         {
             var xLenght = map.GetLength(0);
             var yLenght = map.GetLength(1);
@@ -35,11 +44,11 @@ y=13, x=498..504";
                     builder.Append(map[x, y]);
                 }
 
-                _output.WriteLine(builder.ToString());
+                Sw.WriteLine(builder.ToString());
             }
         }
 
-        [Fact]
+	    [Fact]
         public void CanParse()
         {
             var day = new Day17(_testInput);
@@ -48,10 +57,10 @@ y=13, x=498..504";
             Assert.Equal(12, day.Map.GetLength(0));
             Assert.Equal(14, day.Map.GetLength(1));
 
-            //Render(day.Map);
+           // Render(day.Map);
         }
 
-        [Fact]
+	    [Fact]
         public void CanDropWater()
         {
             var day = new Day17(_testInput);
@@ -61,22 +70,43 @@ y=13, x=498..504";
             Assert.Equal(1, drop.X);
             Assert.Equal(6, drop.Y);
 
-            //Render(day.Map);
+         //   Render(day.Map);
         }
 
-        [Fact]
+	    [Fact]
         public void CanDropManyWater()
         {
             var day = new Day17(_testInput);
 
-            day.DropManyWater(50);
+            day.DropManyWater(57);
 
             Assert.Equal('w', day.Map[1, 6]);
             Assert.Equal('w', day.Map[1, 5]);
-            Assert.Equal('.', day.Map[1, 4]);
             Assert.Equal('w', day.Map[5, 4]);
 
-            Render(day.Map);
+           // Render(day.Map);
         }
-    }
+
+	    [Fact]
+	    public void CanFlood()
+	    {
+		    var day = new Day17(_testInput);
+
+		    var result = day.Flood();
+
+			Assert.Equal(57, result);
+		    //Render(day.Map);
+		}
+
+	    [Fact]
+	    public void Q1()
+	    {
+		    var day = new Day17(Inputs.Day17);
+
+		    var result = day.Flood();
+
+		    Assert.Equal(1, result);
+		    Render(day.Map);
+	    }
+	}
 }
