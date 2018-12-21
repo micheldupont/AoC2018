@@ -106,15 +106,35 @@ namespace AoC2018
 		public int IpRegisterIndex { get; }
 		public int CurrentIp { get; set; }
 
+		public HashSet<int> DebugValues { get; set; }
+
 		public InstructionPointer(int ipRegisterIndex)
 		{
 			IpRegisterIndex = ipRegisterIndex;
 			CurrentIp = 0;
+
+			DebugValues = new HashSet<int>();
 		}
 
 		public bool ExecuteNextInstruction(List<Instruction> program, List<int> registers)
 		{
 			UpdateIpRegister(registers);
+
+			//for day21 Q1
+			/*	if (CurrentIp == 28)
+				{
+					throw new Exception("Key condition! - value: " + registers[4]);
+				}*/
+
+			//day 21 Q2
+			if (CurrentIp == 28)
+			{
+				if(!DebugValues.Contains(registers[4]))
+					DebugValues.Add(registers[4]);
+				else
+					throw new Exception("value repeating! : " + DebugValues);
+			}
+
 			program[CurrentIp].Run(registers);
 			UpdateCurrentIp(registers);
 
