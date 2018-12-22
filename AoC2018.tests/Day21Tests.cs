@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Xunit;
 
 namespace AoC2018.tests
 {
@@ -18,11 +20,11 @@ namespace AoC2018.tests
 
 	( 5) seti 0 4 4				reg[4] = 0
 
-	( 6) bori 4 65536 3			reg[3] = reg[4] | 65536             //3: 65536
+	( 6) bori 4 65536 3			reg[3] = reg[4] | 65536             //3: 65536 (0b
 	( 7) seti 12670166 8 4		reg[4] = 12670166					//4: 12670166
-	( 8) bani 3 255 2			reg[2] = reg[3] & 255				//2:  0
+	( 8) bani 3 255 2			reg[2] = reg[3] & 255	(0b1111 1111)			//2:  0
 	( 9) addr 4 2 4				reg[4] = reg[4] + reg[2]			//4: 12670166
-	(10) bani 4 16777215 4		reg[4] = reg[4] & 16777215			//4: 12670166
+	(10) bani 4 16777215 4		reg[4] = reg[4] & 16777215 (0b1111 1111 1111 1111 1111 1111			//4: 12670166
 	(11) muli 4 65899 4			reg[4] = reg[4] * 65899				//4: 934951269234
 	(12) bani 4 16777215 4		reg[4] = reg[4] & 16777215			//4: 16337778
 	(13) gtir 256 3 2			reg[2] = 256 > reg[3] ? 1 : 0		//2: 0
@@ -66,17 +68,15 @@ namespace AoC2018.tests
 			Assert.True(true);
 		}
 
-		[Fact]
-		public void Q2()
-		{
-			var day = new Day21(Inputs.Day21);
+	    [Fact]
+	    public void Q2()
+	    {
+	        var day = new Day21.Prog();
 
-			day.Registers[0] = 0;
+	        var val = day.Run2(0);
 
-			day.RunProgram();
-
-			Assert.True(true);
-		}
+	        Assert.Equal(936387, val);
+	    }
 	}
 }
  
